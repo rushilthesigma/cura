@@ -1,0 +1,28 @@
+{
+  "expo": {
+    "name": "Cura",
+    "slug": "cura",
+    "version": "1.0.0",
+    "scheme": "cura",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.cura.demo"
+    },
+    "android": {
+      "package": "com.cura.demo",
+      "adaptiveIcon": {
+        "backgroundColor": "#3485EB"
+      }
+    },
+    "plugins": [
+      "expo-router",
+      "expo-asset"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
