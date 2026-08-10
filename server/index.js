@@ -18,6 +18,8 @@ const ROLE_LABEL = { family: 'Family', caregiver: 'Caregiver' };
 
 const DATA_DIR = path.join(__dirname, 'data');
 const DATA_FILE = path.join(DATA_DIR, 'messages.json');
+const WEB_DIR = path.join(__dirname, '..', 'dist');
+const WEB_INDEX = path.join(WEB_DIR, 'index.html');
 
 function loadState() {
   try {
@@ -63,8 +65,10 @@ function buildThread(role) {
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(express.static(WEB_DIR));
 
 app.get('/', (_req, res) => {
+  if (fs.existsSync(WEB_INDEX)) return res.sendFile(WEB_INDEX);
   res.json({
     name: 'Cura API',
     ok: true,
@@ -157,6 +161,14 @@ app.post('/api/generate-care-plan', async (req, res) => {
     const status = error.code === 'NO_API_KEY' ? 501 : 502;
     res.status(status).json({ error: error.message || 'Could not generate the care plan.' });
   }
+});
+
+// Expo Router uses client-side routes on web. Once the static export exists,
+// return its shell for those routes so refreshes work in the browser.
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api/')) return next();
+  if (fs.existsSync(WEB_INDEX)) return res.sendFile(WEB_INDEX);
+  res.status(404).json({ error: 'Not found.' });
 });
 
 app.listen(PORT, () => {
